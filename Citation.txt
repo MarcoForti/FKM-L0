@@ -1,0 +1,5 @@
+To cite FKMLO in publications use:
+
+Maria Brigida Ferraro, Marco Forti, Paolo Giordani
+FKML0: a Matlab routine for sparse fuzzy clustering
+2024 IEEE International Fuzzy Systems Conference, Yokohama, Japan, 2024
