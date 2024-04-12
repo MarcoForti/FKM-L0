@@ -1,4 +1,4 @@
-To cite FKMLO in publications use:
+To cite FKM-LO in publications use:
 
 Maria Brigida Ferraro, Marco Forti, Paolo Giordani
 FKML0: a Matlab routine for sparse fuzzy clustering
