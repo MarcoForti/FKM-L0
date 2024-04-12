@@ -1,6 +1,6 @@
 function [U, P, J] = FKML0(X, K, m, lambda, conv, maxit, stand)
 %
-% CITATION:
+% CITATION
 % Maria Brigida Ferraro, Marco Forti, Paolo Giordani
 % FKML0: a Matlab routine for sparse fuzzy clustering
 % 2024 IEEE International Fuzzy Systems Conference, Yokohama, Japan, 2024
@@ -24,8 +24,9 @@ function [U, P, J] = FKML0(X, K, m, lambda, conv, maxit, stand)
 
 %% standardization
 if stand == 1
-    Jm = eye(N) - (1/N)*ones(N);
-    X = Jm*X/diag(std(X,1));
+	Jm = eye(N)-(1/N)*ones(N);
+	sd = diag(std(X,1));
+	X = Jm*X/sd;
 end
 
 %% Initialization
@@ -70,9 +71,9 @@ while iter < maxit
             U0j(mj) = 0;
             SUM0 = sum(p0j.*(1./D(j,:)).^(1/(m-1)),2);
             for i = 1:K 
-                U0j(i) = p0j(i) * ((1/(D(j,i))).^(1/(m-1))/SUM0);
+                U0j(i) = p0j(i)*((1/(D(j,i))).^(1/(m-1))/SUM0);
             end
-            if sum(U0j.^m .* D(j,:)) + lambda * sum(p0j) > sum(Uopt.^m .* D(j,:)) + lambda * nnz(Uopt)
+            if sum(U0j.^m .* D(j,:))+lambda*sum(p0j)>sum(Uopt.^m.*D(j,:))+lambda*nnz(Uopt)
 				checkrj = 0; 
             else 
                 Uopt = U0j;
@@ -83,12 +84,16 @@ while iter < maxit
         end
         U(j,:) = Uopt;
     end
-    J(iter) = sum(sum(U.^m .* D)) + lambda * nnz(U>0);
+    J(iter) = sum(sum(U.^m.*D))+lambda*nnz(U>0);
 
 	% Convergence
 	fprintf('Iteration %d: J = %.4f\n', iter, J(iter));
-	if iter > 1 && abs(J(iter) - J(iter-1)) < conv
+	if iter > 1 && abs(J(iter)-J(iter-1)) < conv
         J = J(J>0);
 		break;
+	end
+	if stand == 1
+		meanval = mean(X);
+		P=P*sd+meanval;
 	end
 end

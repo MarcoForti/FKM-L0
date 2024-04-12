@@ -1,6 +1,6 @@
 function [U, P, J] = FKM(X, K, m, conv, maxit, stand)
 %
-% CITATION:
+% CITATION
 % Maria Brigida Ferraro, Marco Forti, Paolo Giordani
 % FKML0: a Matlab routine for sparse fuzzy clustering
 % 2024 IEEE International Fuzzy Systems Conference, Yokohama, Japan, 2024
@@ -15,7 +15,7 @@ function [U, P, J] = FKM(X, K, m, conv, maxit, stand)
 %
 % OUTPUT
 % U:        fuzzy membership degree matrix
-% P:        centroid matrix
+% P:        prototype matrix
 % J:        loss function vector (last element = value at convergence) 
 %
 
@@ -23,8 +23,9 @@ function [U, P, J] = FKM(X, K, m, conv, maxit, stand)
 
 %% standardization
 if stand == 1
-	Jm = eye(N) - (1/N)*ones(N);
-	X = Jm*X/diag(std(X,1));
+	Jm = eye(N)-(1/N)*ones(N);
+	sd = diag(std(X,1));
+	X = Jm*X/sd;
 end
 
 %% Initialization
@@ -57,12 +58,16 @@ while iter < maxit
             U(i,r) = (1/(D(i,r))).^(1/(m-1))/SUM(i);
         end
     end
-    J(iter) = sum(sum(U.^m .* D)) + lambda * nnz(U>0);
+    J(iter) = sum(sum(U.^m.*D))+lambda*nnz(U>0);
 
 	% Convergence
 	fprintf('Iteration %d: J = %.4f\n', iter, J(iter));	
-    if iter > 1 && abs(J(iter) - J(iter-1)) < conv
+    if iter > 1 && abs(J(iter)-J(iter-1)) < conv
         J = J(J>0);
 		break;
     end
+	if stand == 1
+		meanval = mean(X);
+		P = P*sd+meanval;
+	end
 end
