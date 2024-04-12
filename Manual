@@ -1,0 +1,18 @@
+INPUT
+X:        data matrix
+K:        number of clusters
+m:        parameter of fuzziness (e.g. = 2)
+lambda:   parameter of the L0 regularization term (>= 0)
+conv:     convergence criterion (e.g. = 1e-6)
+maxit:    maximum number of iterations (e.g. = 1e+3)
+stand:    standardization (if = 1, data are standardized)
+
+OUTPUT
+U:        membership degree matrix
+P:        prototype matrix
+J:        loss function vector (last element = value at convergence) 
+
+
+NOTE:
+- If lambda = 0 the solution reduces to the Fuzzy K-Means solution
+- If lambda --> Inf the solution tends to the Hard K-Means partition
